@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="soft_black">#66727F</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#00FFFFFF</color>
+    <color name="colorAccent">#ED2D24</color>
+    <color name="colorText">#5a5a5a</color>
+    <color name="colorActiveBlue">#85c3ff</color>
+    <color name="colorRestorePassword">#4BB2F9</color>
+    <color name="gray">#808080</color>
+    <color name="light_gray">#f2f2f7</color>
+    <color name="transparentWhite">#e6ffffff</color>
+    <color name="black_overlay">#66000000</color>
+
+    <color name="lightgrayishblue">#DCDFE5</color>
+    <color name="black300">#C8CCD2</color>
+    <color name="black400">#A3A7AC</color>
+    <color name="black500">#82858B</color>
+    <color name="black600">#5B5F64</color>
+    <color name="black800">#090E13</color>
+    <color name="lightBlue">#EFF3FA</color>
+    <color name="background">#EDEAF3</color>
+    <color name="warning_color">#F44336</color>
+    <color name="light_black">#606060</color>
+    <color name="success_color">#4CAF50</color>
+    <color name="splash">#CF4D49</color>
+    <color name="materialGray">#C8C3CD</color>
+    <color name="text_gray">#808080</color>
+    <color name="default_message_color_rcv">@color/white</color>
+    <color name="off_white">#fffafafa</color>
+    <color name="default_tstamp_color_rcv">@color/off_white</color>
+    <color name="default_bubble_color_rcv">@color/black</color>
+    <color name="default_bubble_color_send">@color/white</color>
+    <color name="main_color_gray">#7d7d7d</color>
+    <color name="default_tstamp_color_send">@color/main_color_gray</color>
+    <color name="default_message_color_send">@color/black</color>
+    <color name="lightGray">#aaa</color>
+    <color name="progress">#36000000</color>
+    <color name="product_header">#A3A7AC</color>
+    <color name="product_value">#2B2E33</color>
+    <color name="color_calendar_day">#494C51</color>
+    <color name="credit_green">#3EBF74</color>
+
+
+    <color name="colorStatusOk">#a8d635</color>
+    <color name="colorGreen">#3EBF74</color>
+    <color name="colorStatusFail">#ff4447</color>
+    <color name="colorStatusInProcess">#7d7d7d</color>
+    <color name="control_background">#cc4285f4</color>
+    <color name="color_line">#C7C6CA</color>
+    <color name="color_button_active">#EE2E25</color>
+    <color name="color_tab_active">@color/black800</color>
+    <color name="color_button_text">#D8D8D8</color>
+    <color name="color_gray_ligth_material">#F6F6F6</color>
+
+    <color name="red50">#FFCACD</color>
+    <color name="color_red">#FF2E27</color>
+    <color name="color_pin">#EFEFF4</color>
+    <color name="pin_dot_color">#D4D7DD</color>
+
+    <color name="accepted">#3e8d51</color>
+
+    <!--Livenees-->
+    <color name="color_gray">#C7C7CC</color>
+    <color name="color_gray_light">#F1F1F1</color>
+    <color name="colorLiveness">#C7C7CC</color>
+
+    <color name="link_blue">#0645AD</color>
+    <color name="screen_background">#F6F6F6</color>
+    <color name="gray_line">#EFEFEF</color>
+    <color name="colorWhiteRed">#F4EEEA</color>
+    <color name="dark_text_color">#8E8E93</color>
+    <color name="colorBlockedStatus">#CF342D</color>
+    <color name="colorClosedStatus">#636363</color>
+    <color name="colorNavIcon">#AEAEB2</color>
+    <color name="colorPrimaryBlue">#007AFF</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorTextStrong">#C9C9C9</color>
+    <color name="colorDisabledAccent">#a7594d</color>
+    <color name="placeholder_color">#645E5E</color>
+    <color name="inProgressStatus">#FFBA54</color>
+    <color name="statusSuccess">#4CB32B</color>
+
+
+    <!-- beta colors -->
+    <color name="beta_primary_red">#FF2E27</color>
+    <color name="beta_pale_red">#FFEAEC</color>
+    <color name="beta_white">#FFFFFF</color>
+    <color name="beta_text_color">@color/black800</color>
+    <color name="colorHexLightGray">#F3F3F3</color>
+    <color name="colorStoryRed">#F47066</color>
+    <color name="colorStoryRedTwo">#FF443A</color>
+    <color name="progressbefore50">#E7E7E7</color>
+
+
+    <!-- Gradient ProgressBar for Deposit Calculator -->
+    <color name="color_0">#ffe9e9</color>
+    <color name="color_10">#ffd3d3</color>
+    <color name="color_20">#ffbdbd</color>
+    <color name="color_30">#ffbdbd</color>
+    <color name="color_40">#ffa7a7</color>
+    <color name="color_50">#ff9191</color>
+    <color name="color_60">#ff7b7b</color>
+    <color name="color_70">#ff6565</color>
+    <color name="color_80">#ff4f4f</color>
+    <color name="color_90">#ff3939</color>
+    <color name="color_100">#ff2323</color>
+
+    <!--Card-->
+    <color name="card_text_color">@color/black800</color>
+    <color name="reg_green_ok">#4CAF50</color>
+    <color name="colorBlueGray">#F3F7FD</color>
+
+    <color name="black50">#F3F7FD</color>
+
+    <color name="textPrimary">#4a4a4a</color>
+    <color name="textPrimaryLight">#818186</color>
+    <color name="textSecondary">#8E8E93</color>
+    <color name="colorSurface">#ffffff</color>
+    <color name="backgroundPrimary">#f2f2f7</color>
+    <color name="accountDivider">#d8d8d8</color>
+
+</resources>

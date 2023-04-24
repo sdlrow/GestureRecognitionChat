@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_launcher"
+    app:startDestination="@id/FragmentLauncher">
+
+    <fragment
+        android:id="@+id/FragmentLauncher"
+        android:name="com.example.gesturerecognitionwebchat.Launcher.LauncherFragment"
+        android:label="@string/fragment_launcher"
+        tools:layout="@layout/fragment_launcher_layout">
+    </fragment>
+</navigation>
