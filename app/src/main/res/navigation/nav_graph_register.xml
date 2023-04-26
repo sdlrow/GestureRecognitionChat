@@ -12,17 +12,17 @@
         tools:layout="@layout/fragment_login">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_Login_to_Register"
+            app:destination="@id/RegisterFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.gesturerecognitionwebchat.SecondFragment"
+        android:id="@+id/RegisterFragment"
+        android:name="com.example.gesturerecognitionwebchat.RegisterFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second2">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/action_Register_to_Login"
             app:destination="@id/LoginFragment" />
     </fragment>
 </navigation>

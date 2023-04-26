@@ -26,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
 val appModule = module {
     viewModel {
         LaunchViewModel(get())
-        RegistrationViewModel(get())
+        RegistrationViewModel(get(), get())
     }
 }
 val prefModule = module {
@@ -88,6 +88,6 @@ fun createOkHttpOpenApi(context: Context) = OkHttpClient.Builder()
 
 
 val hostnameVerifier = HostnameVerifier { _, _ -> true }
-const val timeout = 120L
+const val timeout = 30L
 const val stompTimeout = 300L
 const val API_URL = "http://192.168.237.1:8081/api/"

@@ -1,21 +1,30 @@
 package com.example.gesturerecognitionwebchat
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.gesturerecognitionwebchat.Token.TokenHolder
 import com.example.gesturerecognitionwebchat.base.BaseViewModel
+import com.example.gesturerecognitionwebchat.base.PrefManager
 import com.example.gesturerecognitionwebchat.repository.RegistrationRepository
 
-class RegistrationViewModel(private val registrationRepository: RegistrationRepository) :
+class RegistrationViewModel(
+    private val registrationRepository: RegistrationRepository, private val prefManager: PrefManager
+) :
     BaseViewModel() {
-    fun registerTest() {
-        uiCaller.makeRequest({ registrationRepository.postRegistration(
-            "test1221",
-            "test1221@gmail.com",
-            "test123",
-            listOf("user")
+    var errorButtonLiveData = MutableLiveData<String>()
+    var loginPasswordLiveData = MutableLiveData<Boolean>()
+    fun register(email: String, password: String) {
+        uiCaller.makeRequest({
+            registrationRepository.postRegistration(
+                email,
+                password,
+                listOf("user")
 
-        ) }) { requestResult ->
-            uiCaller.unwrap(requestResult) {
+            )
+        }) { requestResult ->
+            uiCaller.unwrap(requestResult, { errorMessage->
+                errorButtonLiveData.value = errorMessage
+            }) {
                 Log.d("test23M", it.message.toString())
             }
         }
@@ -27,10 +36,15 @@ class RegistrationViewModel(private val registrationRepository: RegistrationRepo
             password
 
         ) }) { requestResult ->
-            uiCaller.unwrap(requestResult) {
+            uiCaller.unwrap(requestResult, { errorMessage->
+                errorButtonLiveData.value = errorMessage
+            }) {
                 TokenHolder.access_token = it.accessToken ?: ""
+                prefManager.clean()
+                prefManager.saveLogin(email)
+                prefManager.savePassword(password)
+                loginPasswordLiveData.value = true
                 Log.d("test23Access", it.accessToken.toString())
-                testJWT()
             }
         }
     }

@@ -16,10 +16,9 @@ class RegistrationRepository(
     private val api: Api,
     private val prefManager: PrefManager
 ): CoroutineCaller by ApiCaller() {
-    suspend fun postRegistration(username: String, email: String, password: String, roles: List<String>): RequestResult<RegistrationResponse>{
+    suspend fun postRegistration(email: String, password: String, roles: List<String>): RequestResult<RegistrationResponse>{
         val registrationJson = """
             {
-                "username": "$username",
                 "email": "$email",
                 "password": "$password",
                 "role": ${roles.map { "\"$it\"" }.joinToString(prefix = "[", postfix = "]")}
@@ -34,7 +33,7 @@ class RegistrationRepository(
     suspend fun sendLogin(email: String, password: String): RequestResult<LoginResponse>{
         val registrationJson = """
             {
-                "username": "$email",
+                "email": "$email",
                 "password": "$password"
             }
         """.trimIndent()

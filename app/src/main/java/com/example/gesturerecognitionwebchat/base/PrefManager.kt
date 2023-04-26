@@ -13,6 +13,29 @@ class PrefManager(private val context: Context) {
     private var sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
+    fun clean() {
+        sharedPreferences.edit().clear().apply()
+    }
+
+    fun saveLogin(login: String) {
+        sharedPreferences.edit()
+            .putString(KEY_LOGIN, login).apply()
+    }
+
+    fun getLogin(): String? {
+        return sharedPreferences.getString(KEY_LOGIN, null)
+    }
+
+    fun getPassword(): String? {
+        return sharedPreferences.getString(KEY_PASSWORD, null)
+    }
+
+    fun savePassword(password: String) {
+        sharedPreferences.edit()
+            .putString(KEY_PASSWORD, password)
+            .apply()
+    }
+
     fun isLoginAndPasswordExist(): Boolean {
         sharedPreferences.getString(KEY_LOGIN, null)?.let { l ->
             sharedPreferences.getString(KEY_PASSWORD, "")?.let { p ->

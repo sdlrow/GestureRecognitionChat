@@ -44,6 +44,8 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+
+
     protected open val errorMessageObserver = EventObserver<String> {
         Log.d("test23Err" , it.toString())
         onError(it)

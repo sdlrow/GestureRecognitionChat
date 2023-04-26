@@ -10,16 +10,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Интерфейс для взаимодействия с UI:
- * IO-запросы [makeRequest] (со вспомогательной функцией [unwrap])
- * выставление статуса [set]
- * отправление сообщений об ошибках [setError]
- *
- * Предназначен для того, чтобы интеракторы могли взаимодействовать с View в MVVM
- *
- * Не трогать без консультации с Ильдаром!
- */
 interface UiCaller {
     val statusLiveData: LiveData<Status>
     val errorLiveData: LiveData<EventWrapper<String>>
