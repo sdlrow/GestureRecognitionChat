@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_start_chat">
+
+
+    <fragment
+        android:id="@+id/nav_start_chat"
+        android:name="com.example.gesturerecognitionwebchat.NewChatFragment"
+        android:label="@string/new_chat_fragment"
+        tools:layout="@layout/fragment_new_chat">
+    </fragment>
+    <fragment
+        android:id="@+id/nav_chats"
+        android:name="com.example.gesturerecognitionwebchat.ChatFragment"
+        android:label="@string/chat_fragment"
+        tools:layout="@layout/fragment_chat">
+    </fragment>
+    <fragment
+        android:id="@+id/nav_notifications"
+        android:name="com.example.gesturerecognitionwebchat.NotificationFragment"
+        android:label="@string/notification_fragment"
+        tools:layout="@layout/fragment_notification">
+    </fragment>
+    <fragment
+        android:id="@+id/nav_stat"
+        android:name="com.example.gesturerecognitionwebchat.StatFragment"
+        android:label="@string/stat_fragment"
+        tools:layout="@layout/fragment_stat">
+    </fragment>
+    <fragment
+        android:id="@+id/nav_account"
+        android:name="com.example.gesturerecognitionwebchat.AccountFragment"
+        android:label="@string/account_fragment"
+        tools:layout="@layout/fragment_account">
+    </fragment>
+
+</navigation>

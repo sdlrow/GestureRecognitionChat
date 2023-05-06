@@ -13,6 +13,7 @@
     <color name="colorAccent">#ED2D24</color>
     <color name="colorText">#5a5a5a</color>
     <color name="colorActiveBlue">#85c3ff</color>
+    <color name="whiteBlue">#f4f7fb</color>
     <color name="colorRestorePassword">#4BB2F9</color>
     <color name="gray">#808080</color>
     <color name="light_gray">#f2f2f7</color>
@@ -98,7 +99,7 @@
     <color name="colorStoryRed">#F47066</color>
     <color name="colorStoryRedTwo">#FF443A</color>
     <color name="progressbefore50">#E7E7E7</color>
-
+    <color name="red">#ee3f58</color>
 
     <!-- Gradient ProgressBar for Deposit Calculator -->
     <color name="color_0">#ffe9e9</color>
@@ -115,9 +116,11 @@
 
     <!--Card-->
     <color name="card_text_color">@color/black800</color>
+    <color name="profile_color">#4bb2f9</color>
+    <color name="profile_color_light">#8ed2ff</color>
+    <color name="accountDivider">#d8d8d8</color>
     <color name="reg_green_ok">#4CAF50</color>
     <color name="colorBlueGray">#F3F7FD</color>
-
     <color name="black50">#F3F7FD</color>
 
     <color name="textPrimary">#4a4a4a</color>
@@ -125,6 +128,5 @@
     <color name="textSecondary">#8E8E93</color>
     <color name="colorSurface">#ffffff</color>
     <color name="backgroundPrimary">#f2f2f7</color>
-    <color name="accountDivider">#d8d8d8</color>
 
 </resources>

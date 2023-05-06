@@ -13,7 +13,10 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:src="@drawable/ic_edit_up"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/pulse1"
@@ -21,7 +24,10 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:src="@drawable/ic_edit_down"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/signIn_label"

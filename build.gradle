@@ -19,7 +19,7 @@ buildscript {
         room_version = "2.4.1"
         glide_version = "4.12.0"
         json_version = "20180813"
-        kotlin_reflect_version = "1.6.10"
+        kotlin_reflect_version = "1.6.21"
         compose_version = '1.2.0-rc03'
         espresso_version = '3.4.0'
         core_testing_version = '2.1.0'
@@ -31,6 +31,7 @@ buildscript {
     }
 
     repositories {
+        jcenter()
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }

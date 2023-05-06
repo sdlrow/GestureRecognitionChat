@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|center_horizontal">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#23200000" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="328dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/alert_background"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/messageAlert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="15"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/strokeText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Разрешить приложению видеочат доступ к данным о местоположении устройства и камере?" />
+
+        <View
+            android:id="@+id/strokeText"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/accountDivider"
+            app:layout_constraintBottom_toTopOf="@id/agreeAlert"
+            app:layout_constraintTop_toBottomOf="@id/messageAlert" />
+
+        <TextView
+            android:id="@+id/agreeAlert"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            android:text="При использовании"
+            android:textAllCaps="false"
+            android:textColor="@color/colorRestorePassword"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/strokeUse"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/strokeText" />
+
+        <View
+            android:id="@+id/strokeUse"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/accountDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/cancelAlert"
+            app:layout_constraintTop_toBottomOf="@id/agreeAlert" />
+
+        <TextView
+            android:id="@+id/cancelAlert"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            android:text="Отклонить"
+            android:textAllCaps="false"
+            android:textColor="@color/colorRestorePassword"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/strokeUse" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

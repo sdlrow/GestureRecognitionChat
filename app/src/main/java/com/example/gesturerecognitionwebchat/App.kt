@@ -25,7 +25,8 @@ open class App : Application() {
                 prefModule,
                 apiModuleRetrofit,
                 apiModuleOkHttp,
-                repositoryModule
+                repositoryModule,
+                socketModule
             )
         }
     }

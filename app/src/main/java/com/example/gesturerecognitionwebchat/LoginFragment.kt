@@ -1,5 +1,6 @@
 package com.example.gesturerecognitionwebchat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -49,9 +50,13 @@ class LoginFragment : BaseFragment() {
     private fun observerInitializer() {
         viewModel.errorButtonLiveData.observe(viewLifecycleOwner, errorObserver)
         viewModel.loginPasswordLiveData.observe(viewLifecycleOwner) { loginResult ->
-            if (loginResult) {
-
-            }
+//            if (loginResult) {
+//
+//            }
+            val intent = Intent(activity, MainActivity::class.java)
+            intent.flags =
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
+            startActivityForResult(intent, 0)
         }
     }
 

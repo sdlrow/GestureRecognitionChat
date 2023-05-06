@@ -37,6 +37,7 @@ class RegistrationViewModel(
 
         ) }) { requestResult ->
             uiCaller.unwrap(requestResult, { errorMessage->
+                loginPasswordLiveData.value = false
                 errorButtonLiveData.value = errorMessage
             }) {
                 TokenHolder.access_token = it.accessToken ?: ""

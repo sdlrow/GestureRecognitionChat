@@ -27,9 +27,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Test"
+            android:name=".MainActivity"
             android:exported="false"
-            android:label="@string/title_activity_test"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Launcher.LauncherActivity"
@@ -45,7 +45,7 @@
         <activity
             android:name=".RegisterActivity"
             android:exported="false"
-            android:label="@string/title_activity_main"
+            android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

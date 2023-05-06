@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/LoginFragment"
         android:name="com.example.gesturerecognitionwebchat.LoginFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/fragment_label_login"
         tools:layout="@layout/fragment_login">
 
         <action
@@ -18,8 +18,8 @@
     <fragment
         android:id="@+id/RegisterFragment"
         android:name="com.example.gesturerecognitionwebchat.RegisterFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second2">
+        android:label="@string/fragment_label_register"
+        tools:layout="@layout/fragment_register">
 
         <action
             android:id="@+id/action_Register_to_Login"

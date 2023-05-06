@@ -13,7 +13,10 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:src="@drawable/ic_edit_up"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/pulse1"
@@ -21,7 +24,10 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:src="@drawable/ic_edit_down"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/signUp_label"
@@ -51,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/username_edit"
+        android:id="@+id/email_edit"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
@@ -76,7 +82,7 @@
         android:layout_marginBottom="15dp"
         android:textColor="@color/soft_black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/username_edit"
+        app:layout_constraintBottom_toTopOf="@+id/email_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +106,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.475"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_edit"></EditText>
+        app:layout_constraintTop_toBottomOf="@+id/email_edit"></EditText>
 
     <TextView
         android:id="@+id/password_hint"
@@ -113,7 +119,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.086"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_edit"
+        app:layout_constraintTop_toBottomOf="@+id/email_edit"
         app:layout_constraintVertical_bias="1.0"
         android:text="Пароль" />
 
@@ -148,7 +154,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_edit"
+        app:layout_constraintTop_toBottomOf="@+id/email_edit"
         app:layout_constraintVertical_bias="0.992" />
 
     <include

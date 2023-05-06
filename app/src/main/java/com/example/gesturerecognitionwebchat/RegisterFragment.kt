@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.fragment_register.nextActionButton
 import kotlinx.android.synthetic.main.fragment_register.password_edit
-import kotlinx.android.synthetic.main.fragment_register.username_edit
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
@@ -66,7 +65,7 @@ class RegisterFragment : BaseFragment() {
                 nextActionButton.background =
                     resources.getDrawable(R.drawable.button_normal_background_inactive, null)
                 clickableButton = false
-                viewModel.register(username_edit.text.toString(), password_edit.text.toString())
+                viewModel.register(email_edit.text.toString(), password_edit.text.toString())
             }
         }
 

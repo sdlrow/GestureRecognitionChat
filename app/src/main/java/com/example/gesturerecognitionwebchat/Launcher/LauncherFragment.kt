@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import com.example.gesturerecognitionwebchat.RegisterActivity
 import com.example.gesturerecognitionwebchat.databinding.FragmentLauncherLayoutBinding
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class LauncherFragment : Fragment() {
 
     private var _binding: FragmentLauncherLayoutBinding? = null
