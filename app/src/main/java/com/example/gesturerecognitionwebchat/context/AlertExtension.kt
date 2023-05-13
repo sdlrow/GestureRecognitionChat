@@ -63,6 +63,21 @@ fun Context.showUpperToast(message: String) {
     }, 2000)
 }
 
+fun Context.showUpperToastError(message: String) {
+    val toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
+    val inflater: LayoutInflater = this.layoutInflater
+    val dialogView: View = inflater.inflate(R.layout.custom_toast_error, null)
+    dialogView.toast_text.text = message
+    dialogView
+    toast.view = dialogView
+    toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
+    toast.duration = Toast.LENGTH_SHORT
+    toast.show()
+    Handler(Looper.getMainLooper()).postDelayed({
+        toast.cancel()
+    }, 2000)
+}
+
 internal fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return context.layoutInflater.inflate(layoutRes, this, attachToRoot)
 }

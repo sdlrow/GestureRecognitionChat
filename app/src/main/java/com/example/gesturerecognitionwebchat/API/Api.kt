@@ -1,5 +1,6 @@
 package com.example.gesturerecognitionwebchat.API
 
+import com.example.gesturerecognitionwebchat.Data.ChatHistory
 import com.example.gesturerecognitionwebchat.Data.RegistrationResponse
 import com.example.gesturerecognitionwebchat.Data.TestData
 import kotlinx.coroutines.Deferred
@@ -12,4 +13,7 @@ import retrofit2.http.POST
 interface Api {
     @GET("cart/getCartItems") // при логине
     fun getJWTtest(): Deferred<Response<List<TestData>>>
+
+    @GET("cart/chatHistory") // при логине
+    fun getChatHistory(): Deferred<Response<ArrayList<ChatHistory>>>
 }

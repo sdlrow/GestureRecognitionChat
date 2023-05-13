@@ -26,7 +26,8 @@ open class App : Application() {
                 apiModuleRetrofit,
                 apiModuleOkHttp,
                 repositoryModule,
-                socketModule
+                socketModule,
+                peerModule
             )
         }
     }

@@ -1,38 +1,34 @@
 package com.example.gesturerecognitionwebchat
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.example.gesturerecognitionwebchat.base.BaseFragment
 import com.example.gesturerecognitionwebchat.context.alertWithActions
+import com.example.gesturerecognitionwebchat.context.showUpperToastError
 import com.example.gesturerecognitionwebchat.databinding.FragmentNewChatBinding
 import kotlinx.android.synthetic.main.fragment_new_chat.*
-import io.socket.client.IO;
-import io.socket.client.Socket
-import io.socket.emitter.Emitter
-import okhttp3.*
-import org.koin.android.ext.android.inject
-import org.koin.core.qualifier.named
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class NewChatFragment : Fragment() {
+class NewChatFragment : BaseFragment() {
     private var _binding: FragmentNewChatBinding? = null
-    private lateinit var socket: Socket
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private lateinit var viewModel: NewChatViewModel
     private val binding get() = _binding!!
-    private val webSocket: WebSocket by inject(named("socketInstance"))
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = getViewModel()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,50 +41,100 @@ class NewChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         clickerInitializer()
+        observerInitializer()
         localizationInitializer()
-//        webSocket.send("Hello, Server!")
-        val okHttpClient = createOkHttpClient()
-
-        val options = IO.Options().apply {
-            path = "/socket.io/"
-            transports = arrayOf("websocket")
-            callFactory = okHttpClient
-            webSocketFactory = okHttpClient
+        if (checkSelfPermission(
+                requireActivity(),
+                android.Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED ||
+            checkSelfPermission(
+                requireActivity(),
+                android.Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            askAudioAndVideoPermissions()
+        } else {
+            binding.contentNoPermissions.visibility = View.GONE
+            binding.contentLoadingSocket.visibility = View.VISIBLE
+            loadLocalData()
         }
-        socket = IO.socket("https://192.168.56.1/", options)
-
-        socket.on(Socket.EVENT_CONNECT, onConnect)
-        socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
-        socket.connect()
-        socket.emit("message", "GET / HTTP/1.1 200 2193 - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 -");
     }
 
-    private val onConnect = Emitter.Listener {
-        Log.d("MyFragment", "Socket connected")
+    private fun loadLocalData(){
+        viewModel.localView = binding.localView
+        viewModel.remoteView = binding.remoteView
+        viewModel.startSocket()
     }
 
-    private val onDisconnect = Emitter.Listener {
-        Log.d("MyFragment", "Socket disconnected")
-    }
+    private fun observerInitializer(){
+        viewModel.localViewInitialized.observe(viewLifecycleOwner, Observer { initialized ->
+            if (initialized) {
+                binding.chatView.visibility = View.VISIBLE
+            }
+        })
+        viewModel.localViewInitializedBefore.observe(viewLifecycleOwner, Observer { initialized ->
+            if (initialized) {
+                binding.localView.release()
+                binding.remoteView.release()
+                binding.localView?.init(viewModel.rootEglBase.eglBaseContext, null)
+                binding.localView?.setEnableHardwareScaler(true);
+                binding.remoteView?.init(viewModel.rootEglBase.eglBaseContext, null);
+            }
+        })
 
-    private val onConnectError = Emitter.Listener { args ->
-        Log.e("MyFragment", "Socket connect error: ${args.contentToString()}")
-    }
-
-    private val onConnectTimeout = Emitter.Listener {
-        Log.e("MyFragment", "Socket connect timeout")
     }
 
     private fun clickerInitializer() {
         confirmButton.setOnClickListener {
-            requireActivity().alertWithActions(
-                message = "Разрешить приложению видеочат доступ к данным о местоположении устройства и камере?",
-                positiveButtonCallback = { Log.d("TestButt", "ДОСТУП К ЖОПЕ ПОЛУЧЕН") },
-                negativeButtonCallback = { Log.d("TestButt", "ДОСТУП К ЖОПЕ ПОКА ЧТО НЕ ПОЛУЧЕН") },
-                positiveText = "При использовании", negativeText = "Отклонить"
+//            requireActivity().alertWithActions(
+//                message = "Разрешить приложению видеочат доступ к видео и аудио?",
+//                positiveButtonCallback = {  askAudioAndVideoPermissions() },
+//                negativeButtonCallback = { Log.d("TestButt", "ДОСТУП К ЖОПЕ ПОКА ЧТО НЕ ПОЛУЧЕН") },
+//                positiveText = "Разрешить", negativeText = "Отклонить"
+//            )
+            askAudioAndVideoPermissions()
+        }
+    }
 
+    private fun askAudioAndVideoPermissions() {
+        if (shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
+                android.Manifest.permission.RECORD_AUDIO
             )
+        ) {
+            requireActivity().alertWithActions(
+                message = "Разрешить приложению видеочат доступ к видео и аудио?",
+                positiveButtonCallback = {
+                    requestPermissions(
+                        arrayOf(
+                            android.Manifest.permission.CAMERA,
+                            android.Manifest.permission.RECORD_AUDIO
+                        ), PERMISSIONS_REQUEST
+                    )
+                },
+                negativeButtonCallback = { Log.d("TestButt", "ДОСТУП К ЖОПЕ ПОКА ЧТО НЕ ПОЛУЧЕН") },
+                positiveText = "Разрешить", negativeText = "Отклонить"
+            )
+        }
+        requestPermissions(
+            arrayOf(
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.RECORD_AUDIO
+            ), PERMISSIONS_REQUEST
+        )
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSIONS_REQUEST) {
+            Log.d("Perm", grantResults[0].toString())
+            Log.d("Perm", grantResults[1].toString())
+            if (grantResults.isNotEmpty()  && grantResults.none { it == PackageManager.PERMISSION_DENIED }) {
+                binding.contentNoPermissions.visibility = View.GONE
+                binding.contentLoadingSocket.visibility = View.VISIBLE
+                loadLocalData()
+            } else {
+                requireActivity().showUpperToastError("Ошибка разрешений")
+            }
         }
     }
 
@@ -97,29 +143,18 @@ class NewChatFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        socket.disconnect()
+        viewModel.disconnectSocket()
         super.onDestroyView()
+        binding.localView.release()
+        binding.remoteView.release()
         _binding = null
     }
 
-    private fun createOkHttpClient(): OkHttpClient {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-
-            override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
-
-            override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
-        })
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, trustAllCerts, SecureRandom())
-        val sslSocketFactory = sslContext.socketFactory
-        return OkHttpClient.Builder()
-            .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-            .hostnameVerifier { _, _ -> true }
-            .build()
-    }
-
     companion object {
+        const val LOCAL_OFFER = "HAVE_LOCAL_OFFER"
+        const val LOCAL_MEDIA_STREAM_LABEL = "Z4uJnUYM9E0aTMSylreEifBpthbaPRoUcn0F"
+        const val PEER_LOCAL = "192.168.1.156"
         private const val NORMAL_CLOSURE_STATUS = 1000
+        private const val PERMISSIONS_REQUEST = 1
     }
 }

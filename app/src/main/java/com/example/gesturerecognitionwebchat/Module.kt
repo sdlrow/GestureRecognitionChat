@@ -20,16 +20,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.webrtc.DefaultVideoDecoderFactory
-import org.webrtc.DefaultVideoEncoderFactory
-import org.webrtc.EglBase
-import org.webrtc.PeerConnectionFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import io.socket.client.IO
 import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.Polling
 import io.socket.engineio.client.transports.WebSocket
 import okhttp3.Request
@@ -39,6 +36,8 @@ import okio.ByteString
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.handshake.ServerHandshake
+import org.webrtc.*
+import org.webrtc.EglBase
 import java.net.ServerSocket.setSocketFactory
 import java.net.URI
 import java.security.KeyStore
@@ -47,10 +46,10 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
 val appModule = module {
-    viewModel {
-        LaunchViewModel(get())
-        RegistrationViewModel(get(), get())
-    }
+    viewModel { LaunchViewModel(get()) }
+    viewModel { ChatViewModel(get()) }
+    viewModel { RegistrationViewModel(get(), get()) }
+    viewModel { NewChatViewModel(androidContext()) }
 }
 val prefModule = module {
     single { PrefManager(androidContext()) }
@@ -59,6 +58,38 @@ val prefModule = module {
     single<CoroutineContext>(named("main")) { Dispatchers.Main }
     factory { ContextProvider(androidContext()) }
     single { TokenInterceptor(get()) }
+}
+
+val peerModule = module {
+
+    single(named("rootEglBase")) {
+        EglBase.create()
+    }
+
+    single(named("peerConnectionFactory")) {
+
+        val options = PeerConnectionFactory.InitializationOptions.builder(get())
+            .setEnableInternalTracer(true)
+            .createInitializationOptions()
+        PeerConnectionFactory.initialize(options)
+        val rootEglBase: EglBase = get(named("rootEglBase"))
+
+        PeerConnectionFactory
+            .builder()
+            .setVideoDecoderFactory(DefaultVideoDecoderFactory(rootEglBase.eglBaseContext))
+            .setVideoEncoderFactory(
+                DefaultVideoEncoderFactory(
+                    rootEglBase.eglBaseContext,
+                    true,
+                    true
+                )
+            )
+            .setOptions(PeerConnectionFactory.Options().apply {
+                disableEncryption = false
+                disableNetworkMonitor = true
+            })
+            .createPeerConnectionFactory()
+    }
 }
 
 val socketModule = module {
@@ -71,107 +102,120 @@ val socketModule = module {
 //        createPeerConnectionVideoFactory(androidContext())
 //    }
 
+//    factory(named("socketInstance")) {
+//        val okHttpClient = get<OkHttpClient>(named("webSocketClient"))
+//
+//        val request = Request.Builder()
+//            .url("wss://192.168.56.1/")
+//            .addHeader(
+//                "User-Agent",
+//                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+//            )
+//            .build()
+//
+//        val listener = object : WebSocketListener() {
+//            override fun onClosed(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
+//                super.onClosed(webSocket, code, reason)
+//                Log.d("WebSocketClient", "onClosed: code=$code, reason=$reason")
+//            }
+//
+//            override fun onClosing(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
+//                super.onClosing(webSocket, code, reason)
+//                Log.d("WebSocketClient", "onClosing: code=$code, reason=$reason")
+//            }
+//
+//            override fun onFailure(
+//                webSocket: okhttp3.WebSocket,
+//                t: Throwable,
+//                response: Response?
+//            ) {
+//                super.onFailure(webSocket, t, response)
+//                Log.e("WebSocketClient", "onFailure: error=${t.message}")
+//            }
+//
+//            override fun onMessage(webSocket: okhttp3.WebSocket, text: String) {
+//                super.onMessage(webSocket, text)
+//                Log.d("WebSocketClient", "onMessage: text=$text")
+//            }
+//
+//            override fun onMessage(webSocket: okhttp3.WebSocket, bytes: ByteString) {
+//                super.onMessage(webSocket, bytes)
+//                Log.d("WebSocketClient", "onMessage: bytes=$bytes")
+//            }
+//
+//            override fun onOpen(webSocket: okhttp3.WebSocket, response: Response) {
+//                super.onOpen(webSocket, response)
+//                Log.d("WebSocketClient", "onOpen")
+//            }
+//        }
+//
+//        return@factory okHttpClient.newWebSocket(request, listener)
+//    }
+//
+//    single(named("socket")) {
+//        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+//            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+//
+//            override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
+//
+//            override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
+//        })
+//        val sslContext = SSLContext.getInstance("SSL")
+//        sslContext.init(null, trustAllCerts, SecureRandom())
+//        val headers = mapOf("User-Agent" to "Android")
+//        val sslSocketFactory = sslContext.socketFactory
+//        val serverUri = URI("wss://192.168.56.1/")
+//        val options = mapOf<String, String>(
+//            "handshakeTimeout" to "5000"
+//        )
+//        object : WebSocketClient(serverUri, options) {
+//            override fun onOpen(handshakedata: ServerHandshake?) {
+//                Log.d("WebSocket", "onOpen")
+//                // Send message to server
+//                send("Hello, Server!")
+//            }
+//
+//            override fun onMessage(message: String?) {
+//                Log.d("WebSocket", "onMessage: $message")
+//            }
+//
+//            override fun onClose(code: Int, reason: String?, remote: Boolean) {
+//                Log.d("WebSocket", "onClose: code=$code, reason=$reason, remote=$remote")
+//            }
+//
+//            override fun onError(ex: Exception?) {
+//                Log.e("WebSocket", "onError", ex)
+//            }
+//
+//
+//        }.apply {
+//            setSocketFactory(sslSocketFactory)
+//            addHeader(
+//                "User-Agent",
+//                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+//            )
+//        }
+//    }
+
     factory(named("socketInstance")) {
-        val okHttpClient = get<OkHttpClient>(named("webSocketClient"))
-
-        val request = Request.Builder()
-            .url("wss://192.168.56.1/")
-            .addHeader(
-                "User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
-            )
-            .build()
-
-        val listener = object : WebSocketListener() {
-            override fun onClosed(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
-                super.onClosed(webSocket, code, reason)
-                Log.d("WebSocketClient", "onClosed: code=$code, reason=$reason")
-            }
-
-            override fun onClosing(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
-                super.onClosing(webSocket, code, reason)
-                Log.d("WebSocketClient", "onClosing: code=$code, reason=$reason")
-            }
-
-            override fun onFailure(
-                webSocket: okhttp3.WebSocket,
-                t: Throwable,
-                response: Response?
-            ) {
-                super.onFailure(webSocket, t, response)
-                Log.e("WebSocketClient", "onFailure: error=${t.message}")
-            }
-
-            override fun onMessage(webSocket: okhttp3.WebSocket, text: String) {
-                super.onMessage(webSocket, text)
-                Log.d("WebSocketClient", "onMessage: text=$text")
-            }
-
-            override fun onMessage(webSocket: okhttp3.WebSocket, bytes: ByteString) {
-                super.onMessage(webSocket, bytes)
-                Log.d("WebSocketClient", "onMessage: bytes=$bytes")
-            }
-
-            override fun onOpen(webSocket: okhttp3.WebSocket, response: Response) {
-                super.onOpen(webSocket, response)
-                Log.d("WebSocketClient", "onOpen")
-            }
+        val okHttpClient: OkHttpClient = get(named("webSocketClient"))
+        val options = IO.Options().apply {
+            path = SOCKET_IO
+            transports = arrayOf(WEB_SOCKET)
+            callFactory = okHttpClient
+            webSocketFactory = okHttpClient
         }
-
-        return@factory okHttpClient.newWebSocket(request, listener)
+        IO.socket(SOCKET_URL, options)
     }
-
-    single(named("socket")) {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-
-            override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
-
-            override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
-        })
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, trustAllCerts, SecureRandom())
-        val headers = mapOf("User-Agent" to "Android")
-        val sslSocketFactory = sslContext.socketFactory
-        val serverUri = URI("wss://192.168.56.1/")
-        val options = mapOf<String, String>(
-            "handshakeTimeout" to "5000"
-        )
-        object : WebSocketClient(serverUri, options) {
-            override fun onOpen(handshakedata: ServerHandshake?) {
-                Log.d("WebSocket", "onOpen")
-                // Send message to server
-                send("Hello, Server!")
-            }
-
-            override fun onMessage(message: String?) {
-                Log.d("WebSocket", "onMessage: $message")
-            }
-
-            override fun onClose(code: Int, reason: String?, remote: Boolean) {
-                Log.d("WebSocket", "onClose: code=$code, reason=$reason, remote=$remote")
-            }
-
-            override fun onError(ex: Exception?) {
-                Log.e("WebSocket", "onError", ex)
-            }
-
-
-        }.apply {
-            setSocketFactory(sslSocketFactory)
-            addHeader(
-                "User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
-            )
-        }
-    }
-
 }
 
 
 val repositoryModule = module {
     factory {
         RegistrationRepository(get(), get(), get())
+    }
+    factory {
+        ChatRepository(get())
     }
 }
 
@@ -221,34 +265,7 @@ fun createPeerConnectionVideoFactory(context: Context): PeerConnectionFactory {
         .createPeerConnectionFactory()
 }
 
-private fun createSocketIOClientOptions(): IO.Options {
 
-    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-
-        override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
-
-        override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
-    })
-    val sslContext = SSLContext.getInstance("SSL")
-    sslContext.init(null, trustAllCerts, SecureRandom())
-    val socketFactory = sslContext.socketFactory
-
-    val okHttpClient = OkHttpClient.Builder()
-        .sslSocketFactory(socketFactory, trustAllCerts as X509TrustManager)
-        .hostnameVerifier { _, _ -> true }
-        .build()
-
-    val options = IO.Options().apply {
-        transports = arrayOf(WebSocket.NAME, Polling.NAME)
-        callFactory = okHttpClient
-        reconnection = true
-        reconnectionAttempts = Integer.MAX_VALUE
-        reconnectionDelay = 1000
-        timeout = 5000
-    }
-    return options
-}
 
 fun createOkHttpOpenApi(context: Context) = OkHttpClient.Builder()
     .connectTimeout(timeout, TimeUnit.SECONDS)
@@ -269,19 +286,14 @@ fun createOkHttpSocket(context: Context): OkHttpClient {
     })
     val sslContext = SSLContext.getInstance("SSL")
     sslContext.init(null, trustAllCerts, SecureRandom())
-    val headers = mapOf("User-Agent" to "Android")
     val sslSocketFactory = sslContext.socketFactory
-    val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-    trustManagerFactory.init(null as KeyStore?)
-    val trustManagers = trustManagerFactory.trustManagers
-    val x509TrustManager: X509TrustManager? = trustManagers.firstOrNull { it is X509TrustManager } as? X509TrustManager
     return OkHttpClient.Builder()
         .connectTimeout(timeout, TimeUnit.SECONDS)
         .readTimeout(timeout, TimeUnit.SECONDS)
         .hostnameVerifier(hostnameVerifier)
         .addInterceptor(ChuckerInterceptor(context))
         .addInterceptor(HeaderInterceptor())
-        .sslSocketFactory(sslSocketFactory, x509TrustManager!!)
+        .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
         .hostnameVerifier { _, _ -> true }
         .build()
 }
@@ -291,3 +303,6 @@ val hostnameVerifier = HostnameVerifier { _, _ -> true }
 const val timeout = 30L
 const val stompTimeout = 300L
 const val API_URL = "http://192.168.237.1:8081/api/"
+const val SOCKET_URL = "https://192.168.1.156/"
+const val SOCKET_IO = "/socket.io/"
+const val WEB_SOCKET = "websocket"

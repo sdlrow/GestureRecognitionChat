@@ -68,8 +68,9 @@ dependencies {
     implementation 'com.github.amoskorir:avatarimagegenerator:1.5.0'
 //
     implementation 'io.socket:socket.io-client:1.0.0'
-    implementation 'org.webrtc:google-webrtc:1.0.26405'
+    implementation 'org.webrtc:google-webrtc:1.0.32006'
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 
 

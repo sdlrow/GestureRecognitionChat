@@ -7,6 +7,13 @@ data class RegistrationResponse(
     val message: String?
 )
 
+@Keep
+data class ChatHistory(
+    val sessionId: Int,
+    val sessionLanguage: String?,
+    val duration: String?,
+    val emailBlur: String = "U"
+)
 
 @Keep
 data class LoginResponse(
