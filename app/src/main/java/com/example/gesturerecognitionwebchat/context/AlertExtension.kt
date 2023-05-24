@@ -60,7 +60,7 @@ fun Context.showUpperToast(message: String) {
     toast.show()
     Handler(Looper.getMainLooper()).postDelayed({
         toast.cancel()
-    }, 2000)
+    }, 1000)
 }
 
 fun Context.showUpperToastError(message: String) {
@@ -75,7 +75,7 @@ fun Context.showUpperToastError(message: String) {
     toast.show()
     Handler(Looper.getMainLooper()).postDelayed({
         toast.cancel()
-    }, 2000)
+    }, 1000)
 }
 
 internal fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {

@@ -1,7 +1,10 @@
 package com.example.gesturerecognitionwebchat
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -10,8 +13,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.gesturerecognitionwebchat.context.alertWithActions
 import com.example.gesturerecognitionwebchat.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.app_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -48,9 +52,43 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.toString()) {
+            ASK -> {
+                Log.d("test2322", item.toString())
+            }
+            else -> {
+                Log.d("test2321", item.toString())
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun onAskMenuItemClick() {
+        Log.d("test232", "12")
+    }
+
+    override fun onBackPressed() {
+        alertWithActions(
+            message = "\n Вы точно хотите выйти? \n",
+            positiveButtonCallback = {
+                val intent = Intent(this, RegisterActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
+                startActivityForResult(intent, 0)
+            },
+            negativeButtonCallback = {},
+            positiveText = "Выйти", negativeText = "Отменить"
+        )
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    companion object {
+        const val ASK = "Ask"
     }
 }

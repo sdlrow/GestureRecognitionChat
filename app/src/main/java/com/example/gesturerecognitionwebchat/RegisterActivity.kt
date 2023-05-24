@@ -25,6 +25,9 @@ class RegisterActivity : AppCompatActivity() {
 //
 //        }
     }
+    override fun onBackPressed() {
+        // Do nothing to disable the back button press
+    }
 
 
     override fun onSupportNavigateUp(): Boolean {

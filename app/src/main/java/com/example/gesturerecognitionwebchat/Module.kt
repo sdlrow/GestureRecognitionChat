@@ -59,27 +59,27 @@ val prefModule = module {
     factory { ContextProvider(androidContext()) }
     single { TokenInterceptor(get()) }
 }
-
+var rootEglBaseModule: EglBase? = null
 val peerModule = module {
 
     single(named("rootEglBase")) {
         EglBase.create()
     }
 
-    single(named("peerConnectionFactory")) {
-
+    factory(named("peerConnectionFactory")) {
+        rootEglBaseModule
         val options = PeerConnectionFactory.InitializationOptions.builder(get())
             .setEnableInternalTracer(true)
             .createInitializationOptions()
         PeerConnectionFactory.initialize(options)
-        val rootEglBase: EglBase = get(named("rootEglBase"))
+        rootEglBaseModule = EglBase.create()
 
         PeerConnectionFactory
             .builder()
-            .setVideoDecoderFactory(DefaultVideoDecoderFactory(rootEglBase.eglBaseContext))
+            .setVideoDecoderFactory(DefaultVideoDecoderFactory(rootEglBaseModule?.eglBaseContext))
             .setVideoEncoderFactory(
                 DefaultVideoEncoderFactory(
-                    rootEglBase.eglBaseContext,
+                    rootEglBaseModule?.eglBaseContext,
                     true,
                     true
                 )
@@ -217,6 +217,12 @@ val repositoryModule = module {
     factory {
         ChatRepository(get())
     }
+    factory {
+        ChangeRepository(get())
+    }
+    factory {
+        NewChatRepository(get())
+    }
 }
 
 
@@ -302,7 +308,7 @@ fun createOkHttpSocket(context: Context): OkHttpClient {
 val hostnameVerifier = HostnameVerifier { _, _ -> true }
 const val timeout = 30L
 const val stompTimeout = 300L
-const val API_URL = "http://192.168.237.1:8081/api/"
-const val SOCKET_URL = "https://192.168.1.156/"
+const val API_URL = "http://192.168.1.157:8081/api/"
+const val SOCKET_URL = "https://192.168.1.157/"
 const val SOCKET_IO = "/socket.io/"
 const val WEB_SOCKET = "websocket"

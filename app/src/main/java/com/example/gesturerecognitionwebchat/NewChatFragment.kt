@@ -14,6 +14,7 @@ import com.example.gesturerecognitionwebchat.base.BaseFragment
 import com.example.gesturerecognitionwebchat.context.alertWithActions
 import com.example.gesturerecognitionwebchat.context.showUpperToastError
 import com.example.gesturerecognitionwebchat.databinding.FragmentNewChatBinding
+import kotlinx.android.synthetic.main.app_main.*
 import kotlinx.android.synthetic.main.fragment_new_chat.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -55,18 +56,21 @@ class NewChatFragment : BaseFragment() {
             askAudioAndVideoPermissions()
         } else {
             binding.contentNoPermissions.visibility = View.GONE
-            binding.contentLoadingSocket.visibility = View.VISIBLE
-            loadLocalData()
+            binding.startSocketButton.visibility = View.VISIBLE
         }
     }
 
-    private fun loadLocalData(){
-        viewModel.localView = binding.localView
-        viewModel.remoteView = binding.remoteView
+    private fun startSocketConnection() {
+        binding.startSocketButton.visibility = View.GONE
+        binding.contentLoadingSocket.visibility = View.VISIBLE
+        loadLocalData()
+    }
+
+    private fun loadLocalData() {
         viewModel.startSocket()
     }
 
-    private fun observerInitializer(){
+    private fun observerInitializer() {
         viewModel.localViewInitialized.observe(viewLifecycleOwner, Observer { initialized ->
             if (initialized) {
                 binding.chatView.visibility = View.VISIBLE
@@ -74,11 +78,14 @@ class NewChatFragment : BaseFragment() {
         })
         viewModel.localViewInitializedBefore.observe(viewLifecycleOwner, Observer { initialized ->
             if (initialized) {
-                binding.localView.release()
-                binding.remoteView.release()
-                binding.localView?.init(viewModel.rootEglBase.eglBaseContext, null)
-                binding.localView?.setEnableHardwareScaler(true);
-                binding.remoteView?.init(viewModel.rootEglBase.eglBaseContext, null);
+                if (viewModel.localView == null) {
+                    viewModel.localView = binding.localView
+                    binding.localView.init(viewModel.rootEglBase?.eglBaseContext, null)
+                    binding.localView.setEnableHardwareScaler(true)
+                    viewModel.remoteView = binding.remoteView
+                    binding.remoteView.init(viewModel.rootEglBase?.eglBaseContext, null)
+                }
+                viewModel.joinRoom()
             }
         })
 
@@ -93,6 +100,24 @@ class NewChatFragment : BaseFragment() {
 //                positiveText = "Разрешить", negativeText = "Отклонить"
 //            )
             askAudioAndVideoPermissions()
+        }
+        socketButton.setOnClickListener {
+            requireActivity().toolbar.visibility = View.GONE
+            viewModel = getViewModel()
+            viewModel.rootEglBase = rootEglBaseModule
+            startSocketConnection()
+//            binding.contentLoadingSocket.visibility = View.GONE
+        }
+        imageBack.setOnClickListener {
+            viewModel.videoCapturer.stopCapture()
+            viewModel.isCaller = null
+//            binding.localView.release()
+//            binding.remoteView.release()
+            viewModel.disconnectSocket()
+            requireActivity().toolbar.visibility = View.VISIBLE
+            binding.contentLoadingSocket.visibility = View.GONE
+            binding.chatView.visibility = View.GONE
+            binding.startSocketButton.visibility = View.VISIBLE
         }
     }
 
@@ -123,15 +148,18 @@ class NewChatFragment : BaseFragment() {
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSIONS_REQUEST) {
             Log.d("Perm", grantResults[0].toString())
             Log.d("Perm", grantResults[1].toString())
-            if (grantResults.isNotEmpty()  && grantResults.none { it == PackageManager.PERMISSION_DENIED }) {
+            if (grantResults.isNotEmpty() && grantResults.none { it == PackageManager.PERMISSION_DENIED }) {
                 binding.contentNoPermissions.visibility = View.GONE
-                binding.contentLoadingSocket.visibility = View.VISIBLE
-                loadLocalData()
+                binding.startSocketButton.visibility = View.VISIBLE
             } else {
                 requireActivity().showUpperToastError("Ошибка разрешений")
             }
@@ -140,20 +168,25 @@ class NewChatFragment : BaseFragment() {
 
     private fun localizationInitializer() {
         (confirmButton as Button).text = "Дать разрешение"
+        (socketButton as Button).text = "Подключиться"
     }
 
     override fun onDestroyView() {
+        if( viewModel.checkCameraInitializer()){
+            viewModel.videoCapturer.stopCapture()
+        }
+        viewModel.isCaller = null
         viewModel.disconnectSocket()
+        binding.contentLoadingSocket.visibility = View.GONE
+        binding.chatView.visibility = View.GONE
+        binding.startSocketButton.visibility = View.VISIBLE
         super.onDestroyView()
-        binding.localView.release()
-        binding.remoteView.release()
-        _binding = null
     }
 
     companion object {
         const val LOCAL_OFFER = "HAVE_LOCAL_OFFER"
         const val LOCAL_MEDIA_STREAM_LABEL = "Z4uJnUYM9E0aTMSylreEifBpthbaPRoUcn0F"
-        const val PEER_LOCAL = "192.168.1.156"
+        const val PEER_LOCAL = "192.168.1.157"
         private const val NORMAL_CLOSURE_STATUS = 1000
         private const val PERMISSIONS_REQUEST = 1
     }

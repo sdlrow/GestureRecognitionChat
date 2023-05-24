@@ -33,6 +33,7 @@
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ic_logo.xml" value="0.2285" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ic_masm.xml" value="0.2285" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ic_protected_grey.xml" value="0.158" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ic_question_circle_grey.xml" value="0.1245" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ic_textfield.xml" value="0.2285" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ios_radio_button.xml" value="0.158" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/ios_radio_button_selected.xml" value="0.158" />
@@ -42,29 +43,36 @@
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/nav_divider.xml" value="0.2275" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/toast_background.xml" value="0.158" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/drawable/toast_error_background.xml" value="0.2005" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/activity_change.xml" value="0.16" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/activity_register.xml" value="0.14537037037037037" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/activity_test.xml" value="0.2105978260869565" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/app_main.xml" value="0.18" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/button_registration.xml" value="0.35778985507246375" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/content_change.xml" value="0.20208333333333334" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/content_main.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/content_navtest.xml" value="0.2105978260869565" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/content_register.xml" value="0.35260416666666666" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/content_test.xml" value="0.2105978260869565" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/custom_toast.xml" value="0.22" />
-        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/custom_toast_error.xml" value="0.33" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/custom_toast_error.xml" value="0.22" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_account.xml" value="0.22" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_alert_dialog_beta.xml" value="0.18" />
-        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_chat.xml" value="0.25" />
-        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_first.xml" value="0.35597826086956524" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_change_email.xml" value="0.20208333333333334" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_change_password.xml" value="0.18" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_chat.xml" value="0.18" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_conf.xml" value="0.1743659420289855" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_first.xml" value="0.18" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_launcher_layout.xml" value="0.35597826086956524" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_login.xml" value="0.2" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_new_chat.xml" value="0.2" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_notification.xml" value="0.17" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_policy_agr.xml" value="0.25" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_policy_conf.xml" value="0.1743659420289855" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_register.xml" value="0.18" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_second.xml" value="0.35597826086956524" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_second2.xml" value="0.35778985507246375" />
-        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_stat.xml" value="0.2" />
+        <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/fragment_stat.xml" value="0.22" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/item_history_chat.xml" value="0.33" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/layout/nav_header_main.xml" value="0.35597826086956524" />
         <entry key="..\:/Users/nur/Desktop/GestureRecognitionChat/app/src/main/res/menu/activity_main_drawer.xml" value="0.33" />

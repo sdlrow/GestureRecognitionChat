@@ -33,7 +33,7 @@ class RegistrationRepository(
     suspend fun sendLogin(email: String, password: String): RequestResult<LoginResponse>{
         val registrationJson = """
             {
-                "email": "$email",
+                "username": "$email",
                 "password": "$password"
             }
         """.trimIndent()
@@ -42,6 +42,8 @@ class RegistrationRepository(
 
         return coroutineApiCall(openApi.login(requestBody))
     }
+
+
 
     suspend fun testJWT() =
         coroutineApiCall(api.getJWTtest())

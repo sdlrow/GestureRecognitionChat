@@ -16,6 +16,11 @@ data class ChatHistory(
 )
 
 @Keep
+data class ResultStatus(
+    val status: Boolean
+)
+
+@Keep
 data class LoginResponse(
     val accessToken: String?
 )

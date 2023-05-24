@@ -11,6 +11,7 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#00FFFFFF</color>
     <color name="colorAccent">#ED2D24</color>
+    <color name="colorRed">#FF0000</color>
     <color name="colorText">#5a5a5a</color>
     <color name="colorActiveBlue">#85c3ff</color>
     <color name="whiteBlue">#f4f7fb</color>

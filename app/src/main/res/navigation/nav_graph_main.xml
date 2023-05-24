@@ -36,5 +36,17 @@
         android:label="@string/account_fragment"
         tools:layout="@layout/fragment_account">
     </fragment>
+    <fragment
+        android:id="@+id/nav_policy_conf"
+        android:name="com.example.gesturerecognitionwebchat.PolicyConfFragment"
+        android:label="@string/account_conf"
+        tools:layout="@layout/fragment_policy_conf">
+    </fragment>
+    <fragment
+        android:id="@+id/nav_policy_agr"
+        android:name="com.example.gesturerecognitionwebchat.PolicyAgrFragment"
+        android:label="@string/account_agr"
+        tools:layout="@layout/fragment_policy_agr">
+    </fragment>
 
 </navigation>

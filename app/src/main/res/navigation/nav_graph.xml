@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/ChangePassword">
+
+    <fragment
+        android:id="@+id/ChangePassword"
+        android:name="com.example.gesturerecognitionwebchat.ChangePasswordFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_change_password">
+        <action
+            android:id="@+id/action_changePassword_to_changeEmail"
+            app:destination="@id/ChangeEmail" />
+    </fragment>
+    <fragment
+        android:id="@+id/ChangeEmail"
+        android:name="com.example.gesturerecognitionwebchat.ChangeEmailFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_change_email">
+    </fragment>
+</navigation>

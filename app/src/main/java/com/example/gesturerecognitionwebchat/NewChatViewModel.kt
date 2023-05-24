@@ -20,22 +20,24 @@ import java.util.*
 class NewChatViewModel(private val context: Context) : BaseViewModel() {
     val localViewInitialized = MutableLiveData<Boolean>()
     val localViewInitializedBefore = MutableLiveData<Boolean>()
+    lateinit var localVideoTrack: VideoTrack
+    lateinit var remoteVideoTrack: VideoTrack
     var localView: SurfaceViewRenderer? = null
     var remoteView: SurfaceViewRenderer? = null
     private var audioManager: AudioManager? = null
     private val socket: Socket by inject(named("socketInstance"))
     private val peerConnectionFactory: PeerConnectionFactory by inject(named("peerConnectionFactory"))
-    val rootEglBase: EglBase by inject(named("rootEglBase"))
+    var rootEglBase: EglBase? = null
     private val roomNumber: String = "1234"
     private var callerId: String? = null
-    private var isCaller: Boolean = true
+    var isCaller: Boolean? = null
     private var remoteDescription: Boolean = false
     private val audioConstraints: MediaConstraints = MediaConstraints()
     private val videoSource: VideoSource = peerConnectionFactory.createVideoSource(false)
     private val audioSource: AudioSource = peerConnectionFactory.createAudioSource(audioConstraints)
     lateinit var videoCapturer: CameraVideoCapturer
     private lateinit var rtcPeerConnection: PeerConnection
-
+    private lateinit var surfaceTextureHelper: SurfaceTextureHelper
     val rtcConstraints = MediaConstraints()
     private val iceServers = listOf(
         PeerConnection.IceServer.builder("stun:${NewChatFragment.PEER_LOCAL}:3478")
@@ -46,7 +48,6 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
             .createIceServer()
     )
     val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
-
     fun startSocket() {
         socket.on(Socket.EVENT_CONNECT, onConnect)
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
@@ -67,11 +68,26 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
 
     fun disconnectSocket() {
         socket.disconnect()
+        socket.close()
+    }
+
+    fun checkCameraInitializer(): Boolean {
+        return (::videoCapturer.isInitialized)
+    }
+
+    fun releaseEGL(){
+        localView?.release()
+        remoteView?.release()
+        surfaceTextureHelper?.surfaceTexture.release()
+    }
+
+    fun joinRoom(){
+        socket.emit("joinRoom", roomNumber)
+
     }
 
     private val onConnect = Emitter.Listener {
         Log.d("MyFragment", "Socket connected")
-        socket.emit("joinRoom", roomNumber)
         val cameraEnumerator = Camera2Enumerator(context)
         val deviceNames = cameraEnumerator.deviceNames
         val cameraDeviceName = deviceNames.find { cameraEnumerator.isFrontFacing(it) }
@@ -79,8 +95,8 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
 //        audioConstraints = MediaConstraints()
 //        audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
 //        videoSource = peerConnectionFactory.createVideoSource(false)
-        val surfaceTextureHelper =
-            SurfaceTextureHelper.create(Thread.currentThread().name, rootEglBase.eglBaseContext)
+        surfaceTextureHelper =
+            SurfaceTextureHelper.create(Thread.currentThread().name, rootEglBase?.eglBaseContext)
         (videoCapturer as VideoCapturer).initialize(
             surfaceTextureHelper,
             context,
@@ -131,8 +147,8 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
         settingRTCConfig()
         rtcPeerConnection =
             peerConnectionFactory.createPeerConnection(rtcConfig, rtcConstraints, observerPeer)!!
-        if (isCaller) {
-            val localVideoTrack = peerConnectionFactory.createVideoTrack(
+        if (isCaller!!) {
+            localVideoTrack = peerConnectionFactory.createVideoTrack(
                 "a576b87a-f4d3-4abf-947f-12644ce9ccb0",
                 videoSource
             )
@@ -289,12 +305,13 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
 
     private val onDisconnectClient  = Emitter.Listener { data ->
         Log.e("ClientDisconnected", "Dissconnect data: ${data.joinToString()}")
+        isCaller = true
     }
 
     private val onAnswer = Emitter.Listener { data ->
         Log.e("onAnswer", rtcPeerConnection.signalingState().name)
         Log.e("OnAnswerData", "Received data: ${data.joinToString()}")
-        if (isCaller && rtcPeerConnection.signalingState().name == LOCAL_OFFER) {
+        if (isCaller!! && rtcPeerConnection.signalingState().name == LOCAL_OFFER) {
             val payload = data[0] as JSONObject
             Log.e("OnAnswerDataR", "Received data: $payload")
             val sdp = payload?.getString("sdp")
@@ -325,7 +342,7 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
 
     private val onOffer = Emitter.Listener { data ->
         Log.e("offer", "Received data: ${data.joinToString()}")
-        if (!isCaller) {
+        if (!isCaller!!) {
             settingRTCConfig()
             rtcPeerConnection =
                 peerConnectionFactory.createPeerConnection(
@@ -342,6 +359,8 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
                 audioSource
             )
             localAudioTrack.setEnabled(true)
+            Log.d("Test233", localView.toString())
+
             localVideoTrack.addSink(localView)
             val stream =
                 peerConnectionFactory.createLocalMediaStream(NewChatFragment.LOCAL_MEDIA_STREAM_LABEL)
@@ -353,7 +372,7 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
             mainHandler.post {
                 localViewInitialized.value = true
             }
-            videoCapturer.startCapture(680, 480, 30)
+            videoCapturer.startCapture(1280, 720, 60)
             val sdpMediaConstraints = MediaConstraints()
 
             sdpMediaConstraints.mandatory.add(
@@ -447,11 +466,9 @@ class NewChatViewModel(private val context: Context) : BaseViewModel() {
     }
 
     private fun addRemoteStreamToVideoView(stream: MediaStream) {
-        val remoteVideoTrack =
-            if (stream.videoTracks != null && stream.videoTracks.size > 0) stream.videoTracks[0] else null
+        remoteVideoTrack = stream.videoTracks[0]
 
-        val remoteAudioTrack =
-            if (stream.audioTracks != null && stream.audioTracks.size > 0) stream.audioTracks[0] else null
+        val remoteAudioTrack = stream.audioTracks[0]
 
         if (remoteAudioTrack != null) {
             remoteAudioTrack.setEnabled(true)
