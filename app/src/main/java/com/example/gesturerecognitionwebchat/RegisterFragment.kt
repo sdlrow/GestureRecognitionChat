@@ -1,7 +1,9 @@
 package com.example.gesturerecognitionwebchat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,10 @@ import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.gesturerecognitionwebchat.base.BaseFragment
+import com.example.gesturerecognitionwebchat.context.MessageType
+import com.example.gesturerecognitionwebchat.context.alertWithActions
+import com.example.gesturerecognitionwebchat.context.showUpperToast
+import com.example.gesturerecognitionwebchat.context.showUpperToastError
 import com.example.gesturerecognitionwebchat.databinding.FragmentRegisterBinding
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_register.*
@@ -51,21 +57,62 @@ class RegisterFragment : BaseFragment() {
 
     private fun observerInitializer() {
         viewModel.errorButtonLiveData.observe(viewLifecycleOwner, errorObserver)
+        viewModel.registerPasswordLiveData.observe(viewLifecycleOwner) {
+            requireActivity().showUpperToast("Вы успешно зарегестрировались")
+            findNavController().navigate(R.id.action_Register_to_Login)
+        }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun arePasswordsSame(password1: String, password2: String): Boolean {
+        return password1 == password2
     }
 
     private val errorObserver = Observer<String> {
         clickableButton = true
         nextActionButton.background =
             resources.getDrawable(R.drawable.button_normal_background_active, null)
+        requireActivity().alertWithActions(
+            message = it,
+            positiveButtonCallback = {},
+            negativeButtonCallback = {},
+            negativeText = "Ок",
+            type = MessageType.NO_ACTION
+        )
     }
+
+
 
     private fun clickerInitializer() {
         nextActionButton.setOnClickListener {
             if (clickableButton) {
-                nextActionButton.background =
-                    resources.getDrawable(R.drawable.button_normal_background_inactive, null)
-                clickableButton = false
-                viewModel.register(email_edit.text.toString(), password_edit.text.toString())
+                when {
+                    !isValidEmail(binding.emailEdit.text.toString()) -> {
+                        requireActivity().showUpperToastError("Проверьте правильность введенных данных")
+                    }
+                    !arePasswordsSame(
+                        binding.passwordEdit.text.toString(),
+                        binding.passwordAgainEdit.text.toString()
+                    ) -> {
+                        requireActivity().showUpperToastError("Пароли не совпадают")
+                    }
+                    binding.passwordEdit.text.toString()
+                        .isEmpty() || binding.passwordAgainEdit.text.toString().isEmpty() -> {
+                        requireActivity().showUpperToastError("Поле не может быть пустым")
+                    }
+                    binding.passwordEdit.text.toString().length <= 4 || binding.passwordAgainEdit.text.toString().length <= 4 -> {
+                        requireActivity().showUpperToastError("Длина пароля должна быть больше 4 ")
+                    }
+                    else -> {
+                        nextActionButton.background =
+                            resources.getDrawable(R.drawable.button_normal_background_inactive, null)
+                        clickableButton = false
+                        viewModel.register(email_edit.text.toString(), password_edit.text.toString())
+                    }
+                }
             }
         }
 

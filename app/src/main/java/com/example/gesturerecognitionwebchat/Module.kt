@@ -3,6 +3,7 @@ package com.example.gesturerecognitionwebchat
 import android.content.Context
 import android.util.Log
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.example.AccountViewModel
 import com.example.gesturerecognitionwebchat.API.Api
 import com.example.gesturerecognitionwebchat.API.OpenApi
 import com.example.gesturerecognitionwebchat.Launcher.LaunchViewModel
@@ -49,6 +50,7 @@ val appModule = module {
     viewModel { LaunchViewModel(get()) }
     viewModel { ChatViewModel(get()) }
     viewModel { RegistrationViewModel(get(), get()) }
+    viewModel { AccountViewModel(get(), get()) }
     viewModel { NewChatViewModel(androidContext()) }
 }
 val prefModule = module {
@@ -218,7 +220,7 @@ val repositoryModule = module {
         ChatRepository(get())
     }
     factory {
-        ChangeRepository(get())
+        AccountRepository(get())
     }
     factory {
         NewChatRepository(get())

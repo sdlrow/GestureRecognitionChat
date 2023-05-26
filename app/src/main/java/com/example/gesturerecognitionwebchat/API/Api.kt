@@ -1,6 +1,7 @@
 package com.example.gesturerecognitionwebchat.API
 
 import com.example.gesturerecognitionwebchat.Data.*
+import com.example.gesturerecognitionwebchat.utils.Status
 import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -30,5 +31,8 @@ interface Api {
     fun sessionEnd(
         @Body registrationJson: RequestBody
     ): Deferred<Response<ResultStatus>>
+
+    @POST("auth/deleteUser") // при логине
+    fun deleteUserAccount(): Deferred<Response<ResultStatus>>
 
 }

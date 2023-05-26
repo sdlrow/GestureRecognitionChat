@@ -12,11 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.avatarfirst.avatargenlib.AvatarConstants
 import com.avatarfirst.avatargenlib.AvatarGenerator
+import com.example.AccountViewModel
 import com.example.gesturerecognitionwebchat.context.alertWithActions
 import com.example.gesturerecognitionwebchat.context.showUpperToast
 import com.example.gesturerecognitionwebchat.databinding.FragmentAccountBinding
 import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.fragment_account.view.*
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -24,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_account.view.*
 class AccountFragment : Fragment() {
 
     private var _binding: FragmentAccountBinding? = null
-
+    private lateinit var viewModel: AccountViewModel
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -38,11 +40,17 @@ class AccountFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = getViewModel()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.email.text = viewModel.getLogin()
         binding.root.image_profile_icon.setImageDrawable(
             AvatarGenerator.AvatarBuilder(requireContext())
-                .setLabel("T")
+                .setLabel(viewModel.getLogin())
                 .setAvatarSize(64)
                 .setTextSize(10)
                 .toSquare()
@@ -65,6 +73,17 @@ class AccountFragment : Fragment() {
                 true -> requireActivity().showUpperToast("Соединение только по Wi-fi включено")
                 false -> requireActivity().showUpperToast("соединение только по Wi-fi отключено")
             }
+        }
+
+        delete_mail.setOnClickListener {
+            requireActivity().alertWithActions(
+                message = "\n Вы точно хотите уверены, что хотите удалить свою учетную запись? \n",
+                positiveButtonCallback = {
+
+                },
+                negativeButtonCallback = {},
+                positiveText = "Да", negativeText = "Отменить"
+            )
         }
 
         my_button.setOnClickListener {

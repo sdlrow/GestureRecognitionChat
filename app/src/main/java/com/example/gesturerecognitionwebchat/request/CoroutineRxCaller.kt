@@ -2,10 +2,13 @@ package com.example.gesturerecognitionwebchat
 
 import android.util.Log
 import androidx.annotation.Keep
+import com.example.gesturerecognitionwebchat.context.MessageType
+import com.example.gesturerecognitionwebchat.context.alertWithActions
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Deferred
+import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
 import java.net.ConnectException
@@ -185,9 +188,14 @@ class ApiCaller : MultiCoroutineCaller {
         Log.d("test23Ex", e.toString())
         return when (e) {
             is HttpException -> {
+                val errorBody = e.response()?.errorBody()?.string() ?: ""
+                val error_message = JSONObject(errorBody).getString("message")
+                Log.d("test23Ex1", e.code().toString())
+                Log.d("test23Ex2", errorBody)
+                Log.d("test23Ex3", error_message)
                 when (e.code()) {
                     HTTP_CODE_BAD_REQUEST -> {
-                        RequestResult.Error("")
+                        RequestResult.Error(error_message)
                     }
                     HTTP_CODE_UNTRUSTED_DEVICE -> {
                         RequestResult.Error("")
@@ -196,7 +204,7 @@ class ApiCaller : MultiCoroutineCaller {
                         RequestResult.Error("")
                     }
                     HTTP_UNAUTHORIZED -> {
-                        RequestResult.Error(e.code().toString())
+                        RequestResult.Error("В ходе отказано")
                     }
                     HTTP_CODE_TOKEN_EXPIRED -> {
                         RequestResult.Error("")

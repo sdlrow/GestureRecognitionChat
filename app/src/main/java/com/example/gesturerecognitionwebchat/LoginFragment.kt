@@ -3,6 +3,7 @@ package com.example.gesturerecognitionwebchat
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.gesturerecognitionwebchat.base.BaseFragment
+import com.example.gesturerecognitionwebchat.context.MessageType
+import com.example.gesturerecognitionwebchat.context.alertWithActions
+import com.example.gesturerecognitionwebchat.context.showUpperToastError
 import com.example.gesturerecognitionwebchat.databinding.FragmentLoginBinding
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -50,9 +54,6 @@ class LoginFragment : BaseFragment() {
     private fun observerInitializer() {
         viewModel.errorButtonLiveData.observe(viewLifecycleOwner, errorObserver)
         viewModel.loginPasswordLiveData.observe(viewLifecycleOwner) { loginResult ->
-//            if (loginResult) {
-//
-//            }
             val intent = Intent(activity, MainActivity::class.java)
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
@@ -60,13 +61,33 @@ class LoginFragment : BaseFragment() {
         }
     }
 
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
     private fun clickerInitializer() {
         nextActionButton.setOnClickListener {
-            if(clickableButton) {
-                nextActionButton.background =
-                    resources.getDrawable(R.drawable.button_normal_background_inactive, null)
-                clickableButton = false
-                viewModel.login(username_edit.text.toString(), password_edit.text.toString())
+            if (clickableButton) {
+                when {
+                    !isValidEmail(binding.usernameEdit.text.toString()) -> {
+                        requireActivity().showUpperToastError("Проверьте правильность введенных данных")
+                    }
+                    binding.passwordEdit.text.toString().length <= 4 -> {
+                        requireActivity().showUpperToastError("Длина пароля должна быть больше 4 ")
+                    }
+                    else -> {
+                        nextActionButton.background =
+                            resources.getDrawable(
+                                R.drawable.button_normal_background_inactive,
+                                null
+                            )
+                        clickableButton = false
+                        viewModel.login(
+                            username_edit.text.toString(),
+                            password_edit.text.toString()
+                        )
+                    }
+                }
             }
         }
 
@@ -83,6 +104,13 @@ class LoginFragment : BaseFragment() {
         clickableButton = true
         nextActionButton.background =
             resources.getDrawable(R.drawable.button_normal_background_active, null)
+        requireActivity().alertWithActions(
+            message = it,
+            positiveButtonCallback = {},
+            negativeButtonCallback = {},
+            negativeText = "Ок",
+            type = MessageType.NO_ACTION
+        )
     }
 
     override fun showProgress() {

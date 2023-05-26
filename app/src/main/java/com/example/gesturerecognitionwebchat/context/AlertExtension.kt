@@ -12,40 +12,71 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.Keep
 import androidx.annotation.LayoutRes
 import com.example.gesturerecognitionwebchat.R
 import kotlinx.android.synthetic.main.custom_toast.view.*
 import kotlinx.android.synthetic.main.fragment_alert_dialog_beta.view.*
+
+@Keep
+enum class MessageType {
+    ALERT,
+    NO_ACTION
+}
 
 fun Context.alertWithActions(
     message: String,
     cancelable: Boolean = true,
     positiveButtonCallback: () -> Unit,
     negativeButtonCallback: () -> Unit,
-    positiveText: String,
-    negativeText: String
+    type: MessageType = MessageType.ALERT,
+    positiveText: String? = null,
+    negativeText: String? = null
 ) {
-    val inflater: LayoutInflater = this.layoutInflater
-    val dialogView: View = inflater.inflate(R.layout.fragment_alert_dialog_beta, null)
+    when (type) {
+        MessageType.ALERT -> {
+            val inflater: LayoutInflater = this.layoutInflater
+            val dialogView: View = inflater.inflate(R.layout.fragment_alert_dialog_beta, null)
 
-    val dialog = AlertDialog.Builder(this)
-        .setView(dialogView)
-        .setCancelable(cancelable)
-        .create()
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(cancelable)
+                .create()
 
-    dialogView.agreeAlert.text = positiveText
-    dialogView.cancelAlert.text = negativeText
-    dialogView.messageAlert.text = message
-    dialogView.agreeAlert.setOnClickListener {
-        positiveButtonCallback()
-        dialog.dismiss()
+            dialogView.agreeAlert.text = positiveText
+            dialogView.cancelAlert.text = negativeText
+            dialogView.messageAlert.text = message
+            dialogView.agreeAlert.setOnClickListener {
+                positiveButtonCallback()
+                dialog.dismiss()
+            }
+            dialogView.cancelAlert.setOnClickListener {
+                negativeButtonCallback()
+                dialog.dismiss()
+            }
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.show()
+        }
+        MessageType.NO_ACTION -> {
+            val inflater: LayoutInflater = this.layoutInflater
+            val dialogView: View = inflater.inflate(R.layout.fragment_alert_dialog_beta, null)
+
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(cancelable)
+                .create()
+
+            dialogView.agreeAlert.visibility = View.GONE
+            dialogView.cancelAlert.text = negativeText
+            dialogView.messageAlert.text = message
+            dialogView.cancelAlert.setOnClickListener {
+                negativeButtonCallback()
+                dialog.dismiss()
+            }
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.show()
+        }
     }
-    dialogView.cancelAlert.setOnClickListener {
-        negativeButtonCallback()
-        dialog.dismiss()
-    }
-    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    dialog.show()
 }
 
 fun Context.showUpperToast(message: String) {

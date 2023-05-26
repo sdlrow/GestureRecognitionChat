@@ -6,7 +6,7 @@ import com.example.gesturerecognitionwebchat.Data.ResultStatus
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class ChangeRepository(private val api: Api): CoroutineCaller by ApiCaller() {
+class AccountRepository(private val api: Api): CoroutineCaller by ApiCaller() {
 
     suspend fun changePassword(oldPassword: String, password: String): RequestResult<ResultStatus> {
         val registrationJson = """
@@ -31,6 +31,10 @@ class ChangeRepository(private val api: Api): CoroutineCaller by ApiCaller() {
 
         val requestBody = registrationJson.toRequestBody("application/json".toMediaTypeOrNull())
         return coroutineApiCall(api.changeEmail(requestBody))
+    }
+
+    suspend fun deleteUser(): RequestResult<ResultStatus> {
+        return coroutineApiCall(api.deleteUserAccount())
     }
 
 }

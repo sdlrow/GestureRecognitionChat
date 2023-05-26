@@ -13,18 +13,19 @@ class RegistrationViewModel(
     BaseViewModel() {
     var errorButtonLiveData = MutableLiveData<String>()
     var loginPasswordLiveData = MutableLiveData<Boolean>()
+    var registerPasswordLiveData = MutableLiveData<Boolean>()
     fun register(email: String, password: String) {
         uiCaller.makeRequest({
             registrationRepository.postRegistration(
                 email,
                 password,
                 listOf("user")
-
             )
         }) { requestResult ->
             uiCaller.unwrap(requestResult, { errorMessage->
                 errorButtonLiveData.value = errorMessage
             }) {
+                registerPasswordLiveData.value = true
                 Log.d("test23M", it.message.toString())
             }
         }
@@ -37,7 +38,6 @@ class RegistrationViewModel(
 
         ) }) { requestResult ->
             uiCaller.unwrap(requestResult, { errorMessage->
-                loginPasswordLiveData.value = false
                 errorButtonLiveData.value = errorMessage
             }) {
                 TokenHolder.access_token = it.accessToken ?: ""

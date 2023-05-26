@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.gesturerecognitionwebchat.context.MessageType
 import com.example.gesturerecognitionwebchat.context.alertWithActions
 import com.example.gesturerecognitionwebchat.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
@@ -56,6 +57,15 @@ class MainActivity : AppCompatActivity() {
         when (item.toString()) {
             ASK -> {
                 Log.d("test2322", item.toString())
+                this.alertWithActions(
+                    message = "Приложение разработано студентами МУИТА: \n " +
+                            "Калжигитов Нурбол,\n Ли Александ,\n Жексенов Даниял,\n Евдокимов Даниил \n" +
+                            "Научный руководитель:\n Самат Бахытжанович",
+                    positiveButtonCallback = {},
+                    negativeButtonCallback = {},
+                    negativeText = "Ок",
+                    type = MessageType.NO_ACTION
+                )
             }
             else -> {
                 Log.d("test2321", item.toString())
